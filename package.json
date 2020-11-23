@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "A Kurier addon that creates intermediate resource types for many-to-many relationships.",
   "main": "dist/index.js",
-  "types": "dist/types.d.ts",
+  "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kurierjs/kurier-addon-many-to-many"
