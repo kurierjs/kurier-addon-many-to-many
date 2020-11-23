@@ -7,14 +7,14 @@ A Kurier addon that creates intermediate resource types for many-to-many relatio
 Install it using npm or yarn:
 
 ```bash
-$ npm i -D @kurier-addons/many-to-many
-$ yarn add -D @kurier-addons/many-to-many
+$ npm i -D @kurier/addon-many-to-many
+$ yarn add -D @kurier/addon-many-to-many
 ```
 
 Add it to your Kurier app:
 
 ```ts
-import ManyToManyAddon from "@kurier-addons/many-to-many";
+import ManyToManyAddon from "@kurier/addon-many-to-many";
 // ...
 app.use(ManyToManyAddon);
 ```
