@@ -1,0 +1,31 @@
+{
+  "name": "@kurier-addons/many-to-many",
+  "version": "0.0.1",
+  "description": "A Kurier addon that creates intermediate resource types for many-to-many relationships.",
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kurierjs/kurier-addon-many-to-many"
+  },
+  "author": "Joel A. Villarreal Bertoldi <joel.a.villarreal@gmail.com>",
+  "bugs": {
+    "url": "https://github.com/kurierjs/kurier-addon-many-to-many/issues"
+  },
+  "homepage": "https://github.com/kurierjs/kurier-addon-many-to-many#readme",
+  "license": "MIT",
+  "scripts": {
+    "prepare": "install-peers"
+  },
+  "peerDependencies": {
+    "kurier": "^1.0.0"
+  },
+  "devDependencies": {
+    "install-peers-cli": "^2.2.0",
+    "prettier": "^2.1.2",
+    "tslint": "^6.1.3",
+    "tslint-config-airbnb": "^5.11.2",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-plugin-prettier": "^2.3.0",
+    "typescript": "^4.0.5"
+  }
+}
