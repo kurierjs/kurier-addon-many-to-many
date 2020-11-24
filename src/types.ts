@@ -10,7 +10,9 @@ declare module "kurier" {
 
 export type IntermediateResourceClassOptions = {
   resourceType: typeof Resource;
+  foreignResourceType: typeof Resource;
   capitalizedForeignResource: string;
   camelCasedForeignResource: string;
+  localForeignKey: string;
   foreignKey: string;
 };

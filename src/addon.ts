@@ -3,7 +3,7 @@ import { IntermediateResourceClassOptions } from "./types";
 
 export class ManyToManyAddon extends Addon {
   async install(): Promise<void> {
-    this.createIntermediateResources();
+    await this.createIntermediateResources();
   }
 
   async hasManyToManyRelationship(resourceClass: typeof Resource): Promise<boolean> {
@@ -11,16 +11,17 @@ export class ManyToManyAddon extends Addon {
     return relationships.some(([, relationship]) => relationship.manyToMany);
   }
 
-  private createIntermediateResourceClass({
+  private async createIntermediateResourceClass({
     resourceType,
+    foreignResourceType,
     camelCasedForeignResource,
     capitalizedForeignResource,
+    localForeignKey,
     foreignKey,
   }: IntermediateResourceClassOptions) {
     const capitalizedLocalResource = pluralize(capitalize(resourceType.name));
     const camelCasedLocalResource = pluralize(camelize(resourceType.name));
     const intermediateResourceType = singularize(camelize(`${camelCasedLocalResource} ${camelCasedForeignResource}`));
-    const localForeignKey = underscore(`${resourceType.name}_id`);
     const resourceClassName = `${capitalizedLocalResource}${capitalizedForeignResource}`;
 
     const newClass = class IntermediateResource extends Resource {
@@ -37,7 +38,7 @@ export class ManyToManyAddon extends Addon {
             autoInclude: true,
           },
           [camelCasedForeignResource]: {
-            type: () => resourceType,
+            type: () => foreignResourceType,
             belongsTo: true,
             foreignKeyName: foreignKey,
             autoInclude: true,
@@ -53,30 +54,35 @@ export class ManyToManyAddon extends Addon {
     return newClass;
   }
 
-  private createIntermediateResources() {
+  private async createIntermediateResources() {
     const intermediateTypes = [];
-    this.app.types
-      .filter((resource) => this.hasManyToManyRelationship(resource))
-      .forEach((resource) => {
-        Object.entries(resource.schema.relationships).forEach(([relationshipName, relationship]) => {
-          if (!relationship.manyToMany) {
-            return;
-          }
+    await Promise.all(
+      this.app.types
+        .filter((resource) => this.hasManyToManyRelationship(resource))
+        .map(async (resource) => {
+          Object.entries(resource.schema.relationships).map(async ([relationshipName, relationship]) => {
+            if (!relationship.manyToMany) {
+              return;
+            }
 
-          const capitalizedForeignResource = pluralize(capitalize(relationshipName));
-          const camelCasedForeignResource = pluralize(camelize(relationshipName));
-          const foreignKey = underscore(`${relationship.type().name}_id`);
+            const capitalizedForeignResource = pluralize(capitalize(relationshipName));
+            const camelCasedForeignResource = pluralize(camelize(relationshipName));
+            const foreignKey = underscore(`${relationship.type().name}_id`);
+            const localForeignKey = underscore(`${resource.name}_id`);
 
-          intermediateTypes.push(
-            this.createIntermediateResourceClass({
+            const intermediateType = await this.createIntermediateResourceClass({
               resourceType: resource,
+              foreignResourceType: relationship.type(),
               camelCasedForeignResource,
               capitalizedForeignResource,
+              localForeignKey,
               foreignKey,
-            }),
-          );
-        });
-      });
+            });
+
+            intermediateTypes.push(intermediateType);
+          });
+        })
+    );
     this.app.types.push(...intermediateTypes);
   }
 }
