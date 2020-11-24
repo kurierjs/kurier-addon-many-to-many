@@ -1,4 +1,4 @@
-# @kurier-addons/many-to-many
+# @kurier/addon-many-to-many
 
 A Kurier addon that creates intermediate resource types for many-to-many relationships.
 
